@@ -5,10 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 
 /**
  * FileHandler provides low-level file I/O operations for the StealthVault
@@ -22,9 +20,9 @@ import java.nio.file.StandardOpenOption;
  * </p>
  *
  * <b>Thread-safety:</b> Individual read/write calls are atomic at the NIO level
- * (write-then-move is used internally by {@link Files#write} with
- * {@link StandardOpenOption#CREATE}), but concurrent access to the same file
- * from multiple threads is <em>not</em> synchronized by this class.  Callers
+ * (write-then-move is used internally by {@code java.nio.file.Files.write} with
+ * {@code java.nio.file.StandardOpenOption.CREATE}), but concurrent access to the same file
+ * from multiple threads is <em>not</em> synchronized by this class. Callers
  * that need concurrency control should synchronize externally.
  *
  * @author StealthVault Team
