@@ -30,3 +30,10 @@ hs_err_pid*
 # Vault Data
 data/vault/*
 !data/vault/.gitkeep
+
+# Backup Files
+data/backups/*
+!data/backups/.gitkeep
+
+# Recovery Data
+data/recovery.dat
