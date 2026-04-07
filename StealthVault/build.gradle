@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+group = 'com.stealthvault'
+version = '1.0.0'
+sourceCompatibility = '21'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // JavaFX will be automatically managed by the javafxplugin
+}
+
+javafx {
+    version = "21.0.4"
+    modules = ['javafx.controls', 'javafx.graphics', 'javafx.fxml']
+}
+
+application {
+    mainClass = 'Main'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'Main'
+    }
+}
+
+// Run task configuration
+run {
+    if (System.getProperty('os.name').toLowerCase().contains('win')) {
+        systemProperty 'sun.java2d.noddraw', 'true'
+    }
+}
+
+tasks.register('runApp', JavaExec) {
+    group = 'application'
+    description = 'Runs the StealthVault application'
+    mainClass = 'Main'
+    classpath = sourceSets.main.runtimeClasspath
+}

@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StealthVault - Secure Password Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background-color: #1a1a2e;
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* LOGIN SCREEN */
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        #loginScreen {
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #1a1a2e;
+        }
+
+        .login-card {
+            background-color: #16213e;
+            padding: 50px 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card h1 {
+            font-size: 32px;
+            color: #7c3aed;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .login-card .subtitle {
+            font-size: 14px;
+            color: #b0a5d4;
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #b0a5d4;
+            font-size: 12px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        select {
+            width: 100%;
+            padding: 12px;
+            background-color: #0f3460;
+            color: #ffffff;
+            border: 1px solid #7c3aed;
+            border-radius: 5px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 10px rgba(124, 58, 237, 0.3);
+        }
+
+        input::placeholder {
+            color: #8b7db8;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px 20px;
+            background-color: #7c3aed;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #a855f7;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* DASHBOARD SCREEN */
+        #dashboardScreen {
+            display: flex;
+            background-color: #1a1a2e;
+            min-height: 100vh;
+            gap: 0;
+        }
+
+        .sidebar {
+            background-color: #0f3460;
+            width: 200px;
+            padding: 20px;
+            border-right: 1px solid #16213e;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar h2 {
+            font-size: 16px;
+            color: #7c3aed;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .user-info {
+            font-size: 11px;
+            color: #b0a5d4;
+            margin-bottom: 20px;
+        }
+
+        .separator {
+            border-bottom: 1px solid #16213e;
+            margin: 15px 0;
+        }
+
+        .categories-label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #a855f7;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .category-btn {
+            width: 100%;
+            padding: 10px;
+            background-color: transparent;
+            color: #b0a5d4;
+            border: none;
+            border-left: 3px solid transparent;
+            border-radius: 0;
+            text-align: left;
+            cursor: pointer;
+            font-size: 12px;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .category-btn:hover {
+            background-color: #16213e;
+            color: #7c3aed;
+            border-left-color: #7c3aed;
+        }
+
+        .category-btn.active {
+            background-color: #16213e;
+            color: #7c3aed;
+            border-left-color: #7c3aed;
+        }
+
+        .logout-btn {
+            width: 100%;
+            margin-top: auto;
+            background-color: #e11d48;
+            padding: 10px;
+            margin-bottom: 0;
+        }
+
+        .logout-btn:hover {
+            background-color: #be123c;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h2 {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .add-btn {
+            background-color: #7c3aed;
+            padding: 10px 20px;
+            width: auto;
+            margin-top: 0;
+        }
+
+        .password-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .password-card {
+            background-color: #16213e;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #0f3460;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .password-card:hover {
+            background-color: #1f4e6e;
+            border-color: #7c3aed;
+            box-shadow: 0 5px 15px rgba(124, 58, 237, 0.2);
+        }
+
+        .card-details {
+            flex: 1;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .card-info {
+            display: flex;
+            gap: 20px;
+            font-size: 12px;
+        }
+
+        .card-info span {
+            color: #b0a5d4;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .category-badge {
+            background-color: transparent;
+            color: #7c3aed;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 3px;
+        }
+
+        .card-btn {
+            padding: 6px 12px;
+            font-size: 11px;
+            width: auto;
+            margin: 0;
+            border-radius: 4px;
+        }
+
+        .show-btn {
+            background-color: #0f3460;
+            color: #7c3aed;
+            border: 1px solid #7c3aed;
+        }
+
+        .show-btn:hover {
+            background-color: #1f4e6e;
+        }
+
+        /* DIALOG */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: #1a1a2e;
+            padding: 30px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content h2 {
+            font-size: 20px;
+            margin-bottom: 25px;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+        }
+
+        .cancel-btn {
+            background-color: #0f3460;
+            color: #b0a5d4;
+            border: 1px solid #7c3aed;
+        }
+
+        .cancel-btn:hover {
+            background-color: #16213e;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            border: none;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            color: #b0a5d4;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: #8b7db8;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            #dashboardScreen {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #16213e;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .password-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .card-actions {
+                width: 100%;
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="screen active">
+        <div class="login-card">
+            <h1>STEALTH</h1>
+            <p class="subtitle">Secure Password Vault</p>
+            
+            <div class="form-group">
+                <input type="text" id="username" placeholder="Username">
+            </div>
+            
+            <div class="form-group">
+                <input type="password" id="password" placeholder="Password">
+            </div>
+            
+            <button onclick="login()">LOGIN</button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboardScreen" class="screen">
+        <div class="sidebar">
+            <h2>STEALTH</h2>
+            <div class="user-info">User: <span id="userDisplay">demo</span></div>
+            <div class="separator"></div>
+            
+            <span class="categories-label">CATEGORIES</span>
+            <button class="category-btn active" onclick="filterCategory('All')">All</button>
+            <button class="category-btn" onclick="filterCategory('Websites')">Websites</button>
+            <button class="category-btn" onclick="filterCategory('Email')">Email</button>
+            <button class="category-btn" onclick="filterCategory('Banking')">Banking</button>
+            <button class="category-btn" onclick="filterCategory('Social')">Social</button>
+            
+            <button class="logout-btn" onclick="logout()">LOGOUT</button>
+        </div>
+
+        <div class="content">
+            <div class="header">
+                <h2>Your Vault - <span id="categoryDisplay">All</span></h2>
+                <button class="add-btn" onclick="showAddDialog()">+ ADD PASSWORD</button>
+            </div>
+
+            <div class="password-grid" id="passwordGrid"></div>
+        </div>
+    </div>
+
+    <!-- ADD PASSWORD DIALOG -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <h2>Add New Password Entry</h2>
+            
+            <div class="form-group">
+                <label>Service/Website Name:</label>
+                <input type="text" id="serviceName" placeholder="Enter service name (e.g., Gmail)">
+            </div>
+
+            <div class="form-group">
+                <label>Username or Email:</label>
+                <input type="text" id="serviceUsername" placeholder="Enter your username">
+            </div>
+
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="servicePassword" placeholder="Enter password">
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="showPwd" onchange="toggleShowPassword()">
+                <label for="showPwd">Show Password</label>
+            </div>
+
+            <div class="form-group">
+                <label>Category:</label>
+                <select id="serviceCategory">
+                    <option>Websites</option>
+                    <option>Email</option>
+                    <option>Banking</option>
+                    <option>Social</option>
+                    <option>Other</option>
+                </select>
+            </div>
+
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeAddDialog()">CANCEL</button>
+                <button onclick="addPassword()">ADD PASSWORD</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = '';
+        let currentCategory = 'All';
+        let passwords = [
+            { title: 'GitHub', username: 'john.doe', password: 'SuperSecret123!', category: 'Websites' },
+            { title: 'Gmail', username: 'john.doe@gmail.com', password: 'EmailPass456!', category: 'Email' },
+            { title: 'Bank Account', username: 'jdoe123', password: 'BankSecure789!', category: 'Banking' },
+            { title: 'LinkedIn', username: 'john-doe', password: 'LinkedInPass321!', category: 'Social' },
+            { title: 'Twitter', username: 'johndoe', password: 'TweetPass654!', category: 'Social' }
+        ];
+
+        function login() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!username) {
+                alert('Please enter a username');
+                return;
+            }
+            if (!password) {
+                alert('Please enter a password');
+                return;
+            }
+
+            currentUser = username;
+            document.getElementById('userDisplay').textContent = username;
+            document.getElementById('loginScreen').classList.remove('active');
+            document.getElementById('dashboardScreen').classList.add('active');
+            displayPasswords();
+        }
+
+        function displayPasswords() {
+            const grid = document.getElementById('passwordGrid');
+            let filtered = passwords.filter(p => 
+                currentCategory === 'All' || p.category === currentCategory
+            );
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '<div class="empty-state">No items in this category</div>';
+                return;
+            }
+
+            grid.innerHTML = filtered.map((pwd, idx) => `
+                <div class="password-card">
+                    <div class="card-details">
+                        <div class="card-title">${pwd.title}</div>
+                        <div class="card-info">
+                            <span>ID: ${pwd.username}</span>
+                            <span>Pass: ${'•'.repeat(8)}</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <span class="category-badge">${pwd.category}</span>
+                        <button class="card-btn" onclick="copyPassword('${pwd.password}')">COPY</button>
+                        <button class="card-btn show-btn" onclick="showPassword('${pwd.title}', '${pwd.username}', '${pwd.password}')">SHOW</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterCategory(cat) {
+            currentCategory = cat;
+            document.getElementById('categoryDisplay').textContent = cat;
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            displayPasswords();
+        }
+
+        function showPassword(title, username, password) {
+            alert(`${title}\n\nUsername: ${username}\nPassword: ${password}`);
+        }
+
+        function copyPassword(password) {
+            navigator.clipboard.writeText(password).then(() => {
+                alert('Password copied to clipboard!');
+            });
+        }
+
+        function showAddDialog() {
+            document.getElementById('addModal').classList.add('active');
+        }
+
+        function closeAddDialog() {
+            document.getElementById('addModal').classList.remove('active');
+            document.getElementById('serviceName').value = '';
+            document.getElementById('serviceUsername').value = '';
+            document.getElementById('servicePassword').value = '';
+            document.getElementById('showPwd').checked = false;
+            document.getElementById('serviceCategory').value = 'Websites';
+        }
+
+        function toggleShowPassword() {
+            const input = document.getElementById('servicePassword');
+            if (document.getElementById('showPwd').checked) {
+                input.type = 'text';
+            } else {
+                input.type = 'password';
+            }
+        }
+
+        function addPassword() {
+            const name = document.getElementById('serviceName').value.trim();
+            const username = document.getElementById('serviceUsername').value.trim();
+            const pwd = document.getElementById('servicePassword').value.trim();
+            const category = document.getElementById('serviceCategory').value;
+
+            if (!name || !username || !pwd) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            passwords.push({ title: name, username: username, password: pwd, category: category });
+            closeAddDialog();
+            displayPasswords();
+            alert('Password added successfully!');
+        }
+
+        function logout() {
+            document.getElementById('loginScreen').classList.add('active');
+            document.getElementById('dashboardScreen').classList.remove('active');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+            currentCategory = 'All';
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const loginScreen = document.getElementById('loginScreen');
+                const addModal = document.getElementById('addModal');
+                
+                if (loginScreen.classList.contains('active')) {
+                    login();
+                } else if (addModal.classList.contains('active')) {
+                    addPassword();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

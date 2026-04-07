@@ -1,4 +1,177 @@
-/* JavaFX styles */
+/* StealthVault Dark Theme CSS */
+
+/* Root styling */
 .root {
-    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-base: #1a1a2e;
+    -fx-background-color: #1a1a2e;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+/* Alert styling */
+.alert {
+    -fx-background-color: #16213e;
+}
+
+.alert .dialog-pane {
+    -fx-background-color: #16213e;
+}
+
+.alert .dialog-pane .header-panel {
+    -fx-background-color: #16213e;
+}
+
+.alert .dialog-pane .content {
+    -fx-text-fill: #ffffff;
+}
+
+.alert .dialog-pane .content .label {
+    -fx-text-fill: #ffffff;
+}
+
+/* Button styling */
+.button {
+    -fx-padding: 10;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.button:pressed {
+    -fx-opacity: 0.8;
+}
+
+/* Text field styling */
+.text-field, .password-field {
+    -fx-padding: 10;
+    -fx-background-color: #0f3460;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #7c3aed;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-font-size: 12;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #a855f7;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(124, 58, 237, 0.3), 8, 0, 0, 0);
+}
+
+/* Combo box styling */
+.combo-box {
+    -fx-background-color: #0f3460;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #7c3aed;
+    -fx-border-width: 1;
+}
+
+.combo-box-popup {
+    -fx-background-color: #16213e;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #16213e;
+}
+
+.combo-box-popup .list-view .list-cell {
+    -fx-background-color: #16213e;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 8;
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected {
+    -fx-background-color: #7c3aed;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover {
+    -fx-background-color: #1f4e6e;
+}
+
+/* Check box styling */
+.check-box {
+    -fx-text-fill: #b0a5d4;
+    -fx-font-size: 12;
+}
+
+.check-box .box {
+    -fx-background-color: #0f3460;
+    -fx-border-color: #7c3aed;
+    -fx-border-width: 1;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #7c3aed;
+}
+
+/* Separator */
+.separator {
+    -fx-border-color: #16213e;
+}
+
+/* ScrollPane */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+}
+
+.scroll-pane .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical .increment-button,
+.scroll-pane .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #7c3aed;
+    -fx-background-radius: 5;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #a855f7;
+}
+
+/* VBox and HBox */
+.vbox, .hbox {
+    -fx-padding: 0;
+}
+
+/* Label */
+.label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 12;
+}
+
+/* Premium color classes */
+.accent {
+    -fx-text-fill: #7c3aed;
+}
+
+.accent-light {
+    -fx-text-fill: #a855f7;
+}
+
+.dark-bg {
+    -fx-background-color: #1a1a2e;
+}
+
+.card-bg {
+    -fx-background-color: #16213e;
+    -fx-border-color: #0f3460;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+}
+
+.secondary-text {
+    -fx-text-fill: #b0a5d4;
+    -fx-font-size: 11;
 }
