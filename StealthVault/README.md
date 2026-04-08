@@ -1,112 +1,72 @@
-# 🔐 StealthVault - Premium Dark-Themed Password Vault
+# 🔐 StealthVault - Enterprise-Grade Secure Password Manager
 
-A professional JavaFX application with a modern dark-themed UI for managing passwords securely. Built with premium design principles and smooth animations.
+A highly polished, billion-dollar SaaS-style password manager. Built utilizing **Java 26, JavaFX, and AES-GCM Encryption**, featuring a stunning glassmorphism design, fluid animations, and robust underlying cryptography.
 
 ## ✨ Features
 
-### Three Beautiful Screens
-- **LoginScreen** - Clean centered card layout with username/password
-- **VaultDashboard** - Sidebar navigation with vault items displayed as cards  
-- **AddItemDialog** - Popup modal to add new password entries
+### Ultimate SaaS Experience
+- **Fluid UI Elements**: Premium transitions and micro-animations on all components.
+- **Glassmorphism Design**: Soft, translucent layered UI with intricate dropped shadows perfectly complementing the dynamic layout.
+- **Google Fonts Integration**: Utilizing high-fidelity typography (*Inter* and *Playfair Display*).
+- **Responsive Navigation**: Beautiful sidebars with active selection states, dynamic statistics, and interactive data tables.
 
-### Premium Dark Theme
-- **Primary Color**: `#1a1a2e` (Deep dark blue background)
-- **Accent Color**: `#7c3aed` (Vibrant purple highlights)
-- **Secondary Color**: `#0f3460` (Dark blue elements)
-- **Text Color**: White with purple accents for hierarchy
+### Enterprise-Grade Security
+- **AES-GCM Encryption**: Real cryptography to secure local vault files.
+- **Zero-Knowledge Architecture**: The master password is never saved; it is utilized dynamically to encrypt and decrypt the payload.
+- **Secure Key Derivation**: Hardened SHA-256 salt & stretch mechanisms for reliable key creation.
+- **Export & Backup**: Export fully encrypted `.bak` vault archives anywhere.
+- **Account Recovery**: Implemented via secure, personalized security questions.
 
-### Vault Management
-- ✓ 5 pre-loaded demo passwords
-- ✓ Category filtering (All, Websites, Email, Banking, Social)
-- ✓ Password masking display (••••••)
-- ✓ Copy password functionality
-- ✓ Show/hide password toggle
-- ✓ Add new password entries
-- ✓ Responsive card-based layout
-- ✓ Smooth hover animations
+---
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- **Java 21+** 
-- **JavaFX SDK 21.0.4+**
+- **Java 26** or newer
+- **JavaFX SDK 26** (Extracted to `C:\javafx-sdk-26`)
 
-### Installation
+### Booting the Engine
 
-1. **Download JavaFX SDK**
-   - Visit: https://gluonhq.com/products/javafx/
-   - Download: Windows SDK (x64)
-   - Extract to: `C:\javafx-sdk-21`
-
-2. **Launch the Application**
+1. **Launch the Application via Script**:
+   We provide easy-to-use launch scripts:
    ```powershell
-   cd "C:\Users\ADMIN\Documents\Stealth Vault\StealthVault"
+   # PowerShell
    .\start.ps1
    ```
+   ```cmd
+   # Windows Command Prompt
+   .\run.bat
+   ```
 
-3. **Login**
-   - Username: Any text (e.g., "demo")
-   - Password: Any text (e.g., "password")
-   - Click LOGIN
+2. **First Time Setup**:
+   - On the beautiful login screen, click **Sign Up** to create a master account.
+   - Enter your username and a strong master password.
+   - Configure your account recovery security questions.
+   
+3. **Enjoy the Vault**:
+   - Begin adding credentials! 
+   - View visual indicators showing password entropy, filter by identity categories, or export your full vault backup cleanly.
 
-## 📁 Project Structure
+---
+
+## 📁 Repository Structure
 
 ```
 StealthVault/
 ├── src/
-│   ├── Main.java                    # JavaFX Application entry point
-│   ├── module-info.java             # Module declaration
-│   └── ui/
-│       ├── LoginScreen.java         # Authentication UI
-│       ├── VaultDashboard.java      # Main vault interface
-│       ├── AddItemDialog.java       # Add password popup
-│       └── VaultItem.java           # Password data model
+│   ├── Main.java                    # Entry point & scene routing
+│   ├── auth/                        # User authentication payloads & checking
+│   ├── crypto/                      # AES-GCM and Key management
+│   ├── recovery/                    # Export/Import and Security questions
+│   ├── storage/                     # File-system storage operations
+│   └── ui/                          # Elegant, enterprise-grade JavaFX UI classes
 ├── resources/
-│   └── styles.css                   # CSS styling
-├── start.ps1                        # PowerShell launcher
-├── build.ps1                        # Build script
-├── run.bat                          # Batch launcher
-├── QUICK_START.md                   # Quick setup guide
-└── SETUP_GUIDE.md                   # Detailed installation
+│   └── styles.css                   # Extensive premium CSS typography & animations
+├── start.ps1                        # PowerShell boot engine
+├── run.bat                          # Command Line boot engine
+└── pom.xml                          # Maven configuration (if building via Maven)
 ```
 
-## 🎮 How to Use
+## 🎨 Philosophy
 
-### Login Screen
-1. Enter any username
-2. Enter any password  
-3. Click **LOGIN** button
-
-### Vault Dashboard
-- **Sidebar**: Click categories to filter passwords
-- **Cards**: Services with username, masked password, copy & show buttons
-- **Add**: Click "+ ADD PASSWORD" to create new entry
-- **Logout**: Return to login screen
-
-### Add Password Dialog
-1. Enter **Service Name** (e.g., "Gmail")
-2. Enter **Username/Email**
-3. Enter **Password**
-4. Select **Category**
-5. Click **ADD PASSWORD**
-
-## 🎨 Design
-
-Dark theme with:
-- Deep blue background `#1a1a2e`
-- Purple accents `#7c3aed`
-- Smooth animations
-- Professional shadows & effects
-- Responsive layouts
-
-## 📊 Demo Data
-
-5 pre-loaded passwords for testing across different categories.
-
-## 🚀 Running
-
-```powershell
-.\start.ps1
-```
-
-Detailed guides in QUICK_START.md and SETUP_GUIDE.md
+StealthVault was engineered to demonstrate that **desktop apps do not have to look dated**, and **secure applications do not have to be ugly**. By fusing a fully functional local cryptographic engine with web-tier aesthetic design, StealthVault brings the web 3.0 premium SaaS look into the desktop Java ecosystem.
