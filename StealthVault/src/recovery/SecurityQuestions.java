@@ -104,6 +104,25 @@ public class SecurityQuestions {
         this.recoveryFilePath = Paths.get(customDataDir, RECOVERY_FILE);
     }
 
+    /**
+     * Creates a per-user {@code SecurityQuestions} instance.
+     * Recovery data is stored as {@code {username}_recovery.dat} in the
+     * specified directory, allowing multi-user recovery support.
+     *
+     * @param dataDir  the directory to store recovery files; must not be null.
+     * @param username the username for whom recovery is configured.
+     * @throws IllegalArgumentException if either argument is null or empty.
+     */
+    public SecurityQuestions(String dataDir, String username) {
+        if (dataDir == null || dataDir.trim().isEmpty()) {
+            throw new IllegalArgumentException("Data directory must not be null or empty.");
+        }
+        if (username == null || username.trim().isEmpty()) {
+            throw new IllegalArgumentException("Username must not be null or empty.");
+        }
+        this.recoveryFilePath = Paths.get(dataDir, username + "_recovery.dat");
+    }
+
     // ---------------------------------------------------------------
     //  Setup (Signup Flow)
     // ---------------------------------------------------------------

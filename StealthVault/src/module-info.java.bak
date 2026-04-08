@@ -1,0 +1,17 @@
+module StealthVault {
+    requires javafx.controls;
+    requires transitive javafx.graphics;
+    requires javafx.fxml;
+
+    opens ui;
+    opens auth;
+    opens crypto;
+    opens storage;
+    opens recovery;
+
+    exports ui;
+    exports auth;
+    exports crypto;
+    exports storage;
+    exports recovery;
+}

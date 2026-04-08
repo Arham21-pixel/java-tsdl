@@ -15,20 +15,40 @@ if (-not (Test-Path $JAVAFX_MODS)) {
 Write-Host "Compiling StealthVault..." -ForegroundColor Cyan
 Write-Host ""
 
-# Create bin directory if it doesn't exist
+# Create required directories
 if (-not (Test-Path "bin")) {
     New-Item -ItemType Directory -Path "bin" | Out-Null
 }
+if (-not (Test-Path "data")) {
+    New-Item -ItemType Directory -Path "data" | Out-Null
+}
+if (-not (Test-Path "data/vault")) {
+    New-Item -ItemType Directory -Path "data/vault" | Out-Null
+}
 
-# Compile the project
+# Copy resources
+if (Test-Path "resources/styles.css") {
+    Copy-Item "resources/styles.css" "bin/" -Force
+}
+
+# Compile ALL source files across every package
 javac --module-path "$JAVAFX_MODS" `
       --add-modules javafx.controls,javafx.graphics `
       -d bin `
-      src/Main.java `
+      src/auth/PasswordUtils.java `
+      src/auth/AuthManager.java `
+      src/crypto/AESEncryption.java `
+      src/crypto/KeyManager.java `
+      src/storage/FileHandler.java `
+      src/storage/VaultStorage.java `
+      src/storage/VaultService.java `
+      src/recovery/SecurityQuestions.java `
+      src/recovery/ExportManager.java `
+      src/ui/VaultItem.java `
+      src/ui/AddItemDialog.java `
       src/ui/LoginScreen.java `
       src/ui/VaultDashboard.java `
-      src/ui/VaultItem.java `
-      src/ui/AddItemDialog.java
+      src/Main.java
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Compilation failed!" -ForegroundColor Red
@@ -36,6 +56,12 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "Compilation successful!" -ForegroundColor Green
+Write-Host "  - auth (AuthManager, PasswordUtils)"
+Write-Host "  - crypto (AESEncryption, KeyManager)"
+Write-Host "  - storage (FileHandler, VaultStorage, VaultService)"
+Write-Host "  - recovery (SecurityQuestions, ExportManager)"
+Write-Host "  - ui (LoginScreen, VaultDashboard, AddItemDialog, VaultItem)"
+Write-Host "  - Main"
 Write-Host ""
 Write-Host "Running StealthVault..." -ForegroundColor Cyan
 Write-Host ""

@@ -19,7 +19,11 @@ Write-Host "Checking for JavaFX SDK..." -ForegroundColor Yellow
 $javafxFound = $false
 $JAVAFX_HOME = ""
 
-if (Test-Path "C:\javafx-sdk-21\lib") {
+if (Test-Path "C:\javafx-sdk-26\lib") {
+    Write-Host "Found JavaFX at: C:\javafx-sdk-26" -ForegroundColor Green
+    $JAVAFX_HOME = "C:\javafx-sdk-26"
+    $javafxFound = $true
+} elseif (Test-Path "C:\javafx-sdk-21\lib") {
     Write-Host "Found JavaFX at: C:\javafx-sdk-21" -ForegroundColor Green
     $JAVAFX_HOME = "C:\javafx-sdk-21"
     $javafxFound = $true

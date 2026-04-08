@@ -1,16 +1,33 @@
 package ui;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
 import java.util.function.Consumer;
 
+/**
+ * AddItemDialog — Premium redesign matching the HTML demo.
+ * Light theme modal with clean inputs, blue accent save button,
+ * and soft shadows.
+ */
 public class AddItemDialog {
+    
+    private static final String TEXT_PRIMARY = "#0f172a";
+    private static final String TEXT_SECONDARY = "#64748b";
+    private static final String INPUT_BG = "#ffffff";
+    private static final String INPUT_BORDER = "#e2e8f0";
+    private static final String BLUE_600 = "#2563eb";
+    private static final String BLUE_700 = "#1d4ed8";
     
     private Stage dialogStage;
     private Consumer<VaultItem> onItemAdded;
@@ -19,6 +36,8 @@ public class AddItemDialog {
     public AddItemDialog(Consumer<VaultItem> onItemAdded) {
         this.onItemAdded = onItemAdded;
         this.dialogStage = new Stage();
+        // Use transparent style if possible, or utility
+        dialogStage.initStyle(StageStyle.DECORATED); 
         initializeDialog();
         dialogStage.showAndWait();
     }
@@ -26,153 +45,151 @@ public class AddItemDialog {
     private void initializeDialog() {
         dialogStage.setTitle("Add New Password");
         dialogStage.setWidth(450);
-        dialogStage.setHeight(400);
+        dialogStage.setHeight(480);
         dialogStage.initModality(Modality.APPLICATION_MODAL);
         
-        VBox root = new VBox(20);
+        VBox root = new VBox(0);
         root.setStyle(
-            "-fx-background-color: #1a1a2e;" +
-            "-fx-padding: 25;"
+            "-fx-background-color: white;"
         );
-        root.setAlignment(Pos.TOP_CENTER);
         
         // Header
-        Text titleText = new Text("Add New Password Entry");
+        HBox header = new HBox(12);
+        header.setAlignment(Pos.CENTER_LEFT);
+        header.setPadding(new Insets(20, 24, 20, 24));
+        header.setStyle("-fx-border-color: " + INPUT_BORDER + "; -fx-border-width: 0 0 1 0;");
+        
+        StackPane iconBox = new StackPane();
+        iconBox.setStyle(
+            "-fx-background-color: #eff6ff;" +
+            "-fx-background-radius: 12;" +
+            "-fx-min-width: 40; -fx-min-height: 40;"
+        );
+        Text lockIcon = new Text("\uD83D\uDD12");
+        lockIcon.setStyle("-fx-font-size: 16;");
+        iconBox.getChildren().add(lockIcon);
+        
+        Text titleText = new Text("Create Secure Entry");
         titleText.setStyle(
-            "-fx-font-size: 20;" +
+            "-fx-font-size: 18;" +
             "-fx-font-weight: bold;" +
-            "-fx-fill: #ffffff;"
+            "-fx-fill: " + TEXT_PRIMARY + ";"
         );
-        root.getChildren().add(titleText);
         
-        // Form fields
-        VBox formBox = new VBox(15);
-        formBox.setStyle("-fx-padding: 10;");
+        header.getChildren().addAll(iconBox, titleText);
         
-        // Title field
-        Text titleLabel = new Text("Service/Website Name:");
-        titleLabel.setStyle("-fx-font-size: 12; -fx-fill: #b0a5d4; -fx-font-weight: bold;");
+        // Form Body
+        VBox formContent = new VBox(16);
+        formContent.setPadding(new Insets(24));
+        
+        // App Name
+        VBox appNameBox = createFormGroup("Application Name");
         TextField titleField = new TextField();
-        styleInputField(titleField, "Enter service name (e.g., Gmail)");
+        styleInputField(titleField, "e.g. AWS Console, GitHub, bank");
+        appNameBox.getChildren().add(titleField);
         
-        // Username field
-        Text usernameLabel = new Text("Username or Email:");
-        usernameLabel.setStyle("-fx-font-size: 12; -fx-fill: #b0a5d4; -fx-font-weight: bold;");
+        // Identity / Category Row
+        HBox rowBox = new HBox(16);
+        
+        VBox userBox = createFormGroup("Username / Email");
         TextField usernameField = new TextField();
-        styleInputField(usernameField, "Enter your username");
+        styleInputField(usernameField, "");
+        userBox.getChildren().add(usernameField);
+        HBox.setHgrow(userBox, Priority.ALWAYS);
         
-        // Password field
-        Text passwordLabel = new Text("Password:");
-        passwordLabel.setStyle("-fx-font-size: 12; -fx-fill: #b0a5d4; -fx-font-weight: bold;");
-        PasswordField passwordField = new PasswordField();
-        styleInputField(passwordField, "Enter password");
-        
-        // Show password checkbox
-        CheckBox showPasswordCheckbox = new CheckBox("Show Password");
-        showPasswordCheckbox.setStyle(
-            "-fx-font-size: 12;" +
-            "-fx-text-fill: #b0a5d4;"
-        );
-        
-        TextField passwordDisplay = new TextField();
-        passwordDisplay.setVisible(false);
-        passwordDisplay.setManaged(false);
-        styleInputField(passwordDisplay, "");
-        
-        showPasswordCheckbox.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal) {
-                passwordDisplay.setText(passwordField.getText());
-                passwordDisplay.setVisible(true);
-                passwordDisplay.setManaged(true);
-                passwordField.setVisible(false);
-                passwordField.setManaged(false);
-            } else {
-                passwordField.setText(passwordDisplay.getText());
-                passwordField.setVisible(true);
-                passwordField.setManaged(true);
-                passwordDisplay.setVisible(false);
-                passwordDisplay.setManaged(false);
-            }
-        });
-        
-        passwordField.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (showPasswordCheckbox.isSelected()) {
-                passwordDisplay.setText(newVal);
-            }
-        });
-        
-        passwordDisplay.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (showPasswordCheckbox.isSelected()) {
-                passwordField.setText(newVal);
-            }
-        });
-        
-        // Category dropdown
-        Text categoryLabel = new Text("Category:");
-        categoryLabel.setStyle("-fx-font-size: 12; -fx-fill: #b0a5d4; -fx-font-weight: bold;");
+        VBox catBox = createFormGroup("Classification");
         ComboBox<String> categoryBox = new ComboBox<>();
         categoryBox.getItems().addAll("Websites", "Email", "Banking", "Social", "Other");
         categoryBox.setValue("Websites");
         categoryBox.setStyle(
-            "-fx-font-size: 12;" +
-            "-fx-padding: 10;" +
-            "-fx-background-color: #0f3460;" +
-            "-fx-text-fill: #ffffff;"
-        );
-        categoryBox.setPrefHeight(35);
-        
-        formBox.getChildren().addAll(
-            titleLabel, titleField,
-            usernameLabel, usernameField,
-            passwordLabel, passwordField, passwordDisplay, showPasswordCheckbox,
-            categoryLabel, categoryBox
-        );
-        
-        root.getChildren().add(formBox);
-        
-        // Buttons
-        HBox buttonBox = new HBox(15);
-        buttonBox.setAlignment(Pos.CENTER);
-        buttonBox.setStyle("-fx-padding: 20 0 0 0;");
-        
-        Button cancelBtn = new Button("CANCEL");
-        cancelBtn.setPrefWidth(100);
-        cancelBtn.setStyle(
-            "-fx-font-size: 12;" +
-            "-fx-font-weight: bold;" +
-            "-fx-padding: 10;" +
-            "-fx-background-color: #0f3460;" +
-            "-fx-text-fill: #b0a5d4;" +
-            "-fx-border-color: #7c3aed;" +
+            "-fx-font-size: 13;" +
+            "-fx-padding: 4 8;" +
+            "-fx-background-color: " + INPUT_BG + ";" +
+            "-fx-border-color: " + INPUT_BORDER + ";" +
             "-fx-border-width: 1;" +
-            "-fx-border-radius: 5;" +
-            "-fx-background-radius: 5;" +
-            "-fx-cursor: hand;"
+            "-fx-border-radius: 12;" +
+            "-fx-background-radius: 12;"
         );
+        categoryBox.setPrefHeight(42);
+        categoryBox.setMaxWidth(Double.MAX_VALUE);
+        catBox.getChildren().add(categoryBox);
+        HBox.setHgrow(catBox, Priority.ALWAYS);
+        
+        rowBox.getChildren().addAll(userBox, catBox);
+        
+        // Password
+        VBox passGroup = new VBox(6);
+        
+        HBox passHeader = new HBox();
+        passHeader.setAlignment(Pos.CENTER_LEFT);
+        Label passLabel = new Label("Password");
+        passLabel.setStyle("-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: " + TEXT_PRIMARY + ";");
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        Button generateBtn = new Button("GENERATE");
+        generateBtn.setStyle("-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: " + BLUE_600 + "; -fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 0;");
+        
+        passHeader.getChildren().addAll(passLabel, spacer, generateBtn);
+        
+        HBox passInputBox = new HBox(0);
+        passInputBox.setAlignment(Pos.CENTER_LEFT);
+        passInputBox.setStyle(
+            "-fx-background-color: " + INPUT_BG + ";" +
+            "-fx-border-color: " + INPUT_BORDER + ";" +
+            "-fx-border-width: 1;" +
+            "-fx-border-radius: 12;" +
+            "-fx-background-radius: 12;"
+        );
+        
+        TextField passwordField = new TextField(); // Using TextField to keep it visible by default like HTML demo
+        passwordField.setStyle("-fx-background-color: transparent; -fx-font-size: 13; -fx-font-family: monospace; -fx-font-weight: bold; -fx-padding: 12 16;");
+        passwordField.setPrefHeight(42);
+        HBox.setHgrow(passwordField, Priority.ALWAYS);
+        
+        generateBtn.setOnAction(e -> {
+            passwordField.setText(generateRandomPassword());
+        });
+        
+        passInputBox.getChildren().addAll(passwordField);
+        passGroup.getChildren().addAll(passHeader, passInputBox);
+        
+        formContent.getChildren().addAll(appNameBox, rowBox, passGroup);
+        VBox.setVgrow(formContent, Priority.ALWAYS);
+        
+        // Footer Buttons
+        HBox footer = new HBox(12);
+        footer.setAlignment(Pos.CENTER_RIGHT);
+        footer.setPadding(new Insets(20, 24, 20, 24));
+        footer.setStyle("-fx-background-color: #f8fafc; -fx-border-color: " + INPUT_BORDER + "; -fx-border-width: 1 0 0 0;");
+        
+        Button cancelBtn = new Button("Cancel");
+        cancelBtn.setStyle("-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #64748b; -fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 8 16;");
         cancelBtn.setOnAction(e -> dialogStage.close());
         
-        Button addBtn = new Button("ADD PASSWORD");
-        addBtn.setPrefWidth(150);
-        addBtn.setStyle(
-            "-fx-font-size: 12;" +
+        Button saveBtn = new Button("Save to Vault");
+        saveBtn.setStyle(
+            "-fx-font-size: 13;" +
             "-fx-font-weight: bold;" +
-            "-fx-padding: 10;" +
-            "-fx-background-color: #7c3aed;" +
-            "-fx-text-fill: #ffffff;" +
-            "-fx-border-radius: 5;" +
-            "-fx-background-radius: 5;" +
+            "-fx-padding: 10 20;" +
+            "-fx-background-color: " + BLUE_600 + ";" +
+            "-fx-text-fill: white;" +
+            "-fx-border-radius: 12;" +
+            "-fx-background-radius: 12;" +
             "-fx-cursor: hand;"
         );
+        saveBtn.setOnMouseEntered(e -> saveBtn.setStyle(
+            "-fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-color: " + BLUE_700 + "; -fx-text-fill: white; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand;"
+        ));
+        saveBtn.setOnMouseExited(e -> saveBtn.setStyle(
+            "-fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-color: " + BLUE_600 + "; -fx-text-fill: white; -fx-border-radius: 12; -fx-background-radius: 12; -fx-cursor: hand;"
+        ));
         
-        addBtn.setOnAction(e -> {
-            if (validateForm(titleField, usernameField, passwordField, passwordDisplay, showPasswordCheckbox)) {
-                String finalPassword = showPasswordCheckbox.isSelected() ? 
-                    passwordDisplay.getText() : passwordField.getText();
-                    
+        saveBtn.setOnAction(e -> {
+            if (validateForm(titleField, usernameField, passwordField)) {
                 VaultItem newItem = new VaultItem(
-                    titleField.getText(),
-                    usernameField.getText(),
-                    finalPassword,
+                    titleField.getText().trim(),
+                    usernameField.getText().trim(),
+                    passwordField.getText().trim(),
                     categoryBox.getValue()
                 );
                 onItemAdded.accept(newItem);
@@ -181,79 +198,81 @@ public class AddItemDialog {
             }
         });
         
-        buttonBox.getChildren().addAll(cancelBtn, addBtn);
-        root.getChildren().add(buttonBox);
+        footer.getChildren().addAll(cancelBtn, saveBtn);
+        
+        root.getChildren().addAll(header, formContent, footer);
         
         Scene scene = new Scene(root);
         dialogStage.setScene(scene);
+    }
+    
+    private VBox createFormGroup(String labelText) {
+        VBox vbox = new VBox(6);
+        Label lbl = new Label(labelText);
+        lbl.setStyle("-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: " + TEXT_PRIMARY + ";");
+        vbox.getChildren().add(lbl);
+        return vbox;
     }
     
     private void styleInputField(TextField field, String prompt) {
         if (!prompt.isEmpty()) {
             field.setPromptText(prompt);
         }
-        field.setStyle(
-            "-fx-font-size: 12;" +
-            "-fx-padding: 10;" +
-            "-fx-background-color: #0f3460;" +
-            "-fx-text-fill: #ffffff;" +
-            "-fx-prompt-text-fill: #8b7db8;" +
-            "-fx-border-color: #7c3aed;" +
+        String baseStyle =
+            "-fx-font-size: 13;" +
+            "-fx-padding: 12 16;" +
+            "-fx-background-color: " + INPUT_BG + ";" +
+            "-fx-text-fill: " + TEXT_PRIMARY + ";" +
+            "-fx-prompt-text-fill: #94a3b8;" +
+            "-fx-border-color: " + INPUT_BORDER + ";" +
             "-fx-border-width: 1;" +
-            "-fx-border-radius: 5;" +
-            "-fx-background-radius: 5;"
-        );
+            "-fx-border-radius: 12;" +
+            "-fx-background-radius: 12;";
+            
+        field.setStyle(baseStyle);
+        field.setPrefHeight(42);
         
         field.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
                 field.setStyle(
-                    "-fx-font-size: 12;" +
-                    "-fx-padding: 10;" +
-                    "-fx-background-color: #0f3460;" +
-                    "-fx-text-fill: #ffffff;" +
-                    "-fx-prompt-text-fill: #8b7db8;" +
-                    "-fx-border-color: #a855f7;" +
-                    "-fx-border-width: 2;" +
-                    "-fx-border-radius: 5;" +
-                    "-fx-background-radius: 5;" +
-                    "-fx-effect: dropshadow(gaussian, rgba(124, 58, 237, 0.3), 8, 0, 0, 0);"
+                    "-fx-font-size: 13;" +
+                    "-fx-padding: 12 16;" +
+                    "-fx-background-color: " + INPUT_BG + ";" +
+                    "-fx-text-fill: " + TEXT_PRIMARY + ";" +
+                    "-fx-prompt-text-fill: #94a3b8;" +
+                    "-fx-border-color: #cbd5e1;" +
+                    "-fx-border-width: 1.5;" +
+                    "-fx-border-radius: 12;" +
+                    "-fx-background-radius: 12;"
                 );
             } else {
-                field.setStyle(
-                    "-fx-font-size: 12;" +
-                    "-fx-padding: 10;" +
-                    "-fx-background-color: #0f3460;" +
-                    "-fx-text-fill: #ffffff;" +
-                    "-fx-prompt-text-fill: #8b7db8;" +
-                    "-fx-border-color: #7c3aed;" +
-                    "-fx-border-width: 1;" +
-                    "-fx-border-radius: 5;" +
-                    "-fx-background-radius: 5;"
-                );
+                field.setStyle(baseStyle);
             }
         });
     }
     
-    private boolean validateForm(TextField title, TextField username, PasswordField password, 
-                                 TextField passwordDisplay, CheckBox showPassword) {
-        String titleText = title.getText().trim();
-        String usernameText = username.getText().trim();
-        String passwordText = showPassword.isSelected() ? 
-            passwordDisplay.getText().trim() : password.getText().trim();
-        
-        if (titleText.isEmpty()) {
-            showError("Please enter a service/website name");
+    private String generateRandomPassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+";
+        StringBuilder pass = new StringBuilder();
+        for(int i=0; i<16; i++) {
+            pass.append(chars.charAt((int)(Math.random() * chars.length())));
+        }
+        return pass.toString();
+    }
+    
+    private boolean validateForm(TextField title, TextField username, TextField password) {
+        if (title.getText().trim().isEmpty()) {
+            showError("Please enter an Application Name");
             return false;
         }
-        if (usernameText.isEmpty()) {
-            showError("Please enter a username/email");
+        if (username.getText().trim().isEmpty()) {
+            showError("Please enter a Username/Email");
             return false;
         }
-        if (passwordText.isEmpty()) {
-            showError("Please enter a password");
+        if (password.getText().trim().isEmpty()) {
+            showError("Please enter a Password");
             return false;
         }
-        
         return true;
     }
     

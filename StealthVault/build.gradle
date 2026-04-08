@@ -25,6 +25,14 @@ application {
     mainClass = 'Main'
 }
 
+sourceSets {
+    main {
+        resources {
+            srcDirs = ['resources']
+        }
+    }
+}
+
 jar {
     manifest {
         attributes 'Main-Class': 'Main'

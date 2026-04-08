@@ -11,13 +11,13 @@
     <packaging>jar</packaging>
 
     <name>StealthVault - Secure Password Manager</name>
-    <description>A premium dark-themed password vault application</description>
+    <description>A premium dark-themed password vault application with AES-GCM encryption</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
-        <javafx.version>21.0.4</javafx.version>
+        <javafx.version>26</javafx.version>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
     </properties>
 
@@ -33,16 +33,18 @@
             <artifactId>javafx-graphics</artifactId>
             <version>${javafx.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
-            <artifactId>javafx-fxml</artifactId>
-            <version>${javafx.version}</version>
-        </dependency>
     </dependencies>
 
     <build>
         <sourceDirectory>src</sourceDirectory>
         
+        <!-- Include resources directory for styles.css -->
+        <resources>
+            <resource>
+                <directory>resources</directory>
+            </resource>
+        </resources>
+
         <plugins>
             <!-- Compile plugin -->
             <plugin>
